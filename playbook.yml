@@ -1,0 +1,67 @@
+
+---
+- name: install nginx
+  hosts: webservers
+  become: yes
+
+  vars:
+    source_folder: ./nginx
+    destin_folder: /usr/share/nginx/html
+
+
+  tasks:
+
+  - name: install nginx
+    yum: name=nginx state=latest
+  - name: start nginx service
+    service: name=nginx state=started enabled=yes
+  - name: Make site from config
+    template: src={{ source_folder }}/index.j2 dest={{ destin_folder }}/index.html
+
+- name: install haproxy
+  hosts: loadbalansers
+  become: yes
+
+  vars:
+   source_folder: ./haprox
+   destin_folder: /etc/haproxy
+  tasks:
+
+  - name: install haproxy
+    yum: name=haproxy state=latest
+  - name: start haproxy
+    service: name=haproxy state=started enabled=yes
+  - name: install config
+    template: src={{ source_folder  }}/haprox.j2 dest={{ destin_folder  }}/haproxy.cfg
+
+- name: install keepalived
+  hosts: keepalived1
+  become: yes
+
+  vars:
+   source_folder: ./keepalived
+   destin_folder: /etc/keepalived
+  tasks:
+
+  - name: install keepalived
+    yum: name=keepalived state=latest
+  - name: start keepalived
+    service: name=keepalived state=started enabled=yes
+  - name: install config
+    template: src={{ source_folder  }}/keep.j2 dest={{ destin_folder  }}/keepalived.conf
+
+- name: install keepalived2
+  hosts: keepalived2
+  become: yes
+
+  vars:
+   source_folder: ./keepalived
+   destin_folder: /etc/keepalived
+  tasks:
+
+  - name: install keepalived
+    yum: name=keepalived state=latest
+  - name: start keepalived
+    service: name=keepalived state=started enabled=yes
+  - name: install config
+    template: src={{ source_folder  }}/keep2.j2 dest={{ destin_folder  }}/keepalived.conf
