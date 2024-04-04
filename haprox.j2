@@ -30,4 +30,3 @@ balance roundrobin
 mode http
 server webserver1 {{ hostvars['webserver1'].ansible_host }}:80 check
 server webserver2 {{ hostvars['webserver2'].ansible_host }}:80 check
-stop
